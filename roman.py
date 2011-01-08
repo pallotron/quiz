@@ -1,4 +1,4 @@
-
+# see http://blog.angelofailla.com/2010/12/18/spqr/
 import unittest
 
 # your global variables can go here, too ;)
@@ -23,14 +23,6 @@ def roman2dec(roman):
     for i in ('V', 'L', 'D'):
         if re.match(i+"{2}",roman):
             raise ValueError
-
-    # these combos are not allowed
-    #if re.match("[LCDM]VX",roman):
-    #    raise ValueError
-    #if re.match("(VX|LC|DM|VL|VC|VD|XD|LD|VM|XM|XV|LM|I{2,3}VX)",roman):
-    #    raise ValueError
-    #if re.match("(IC|IL|ID|IM|I{2,}X|IXV|VI[XLCDM]|IV[XLCDM])",roman):
-    #    raise ValueError
 
     I = roman.count('I')
     V = roman.count('V')
