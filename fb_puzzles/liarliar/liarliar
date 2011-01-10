@@ -24,11 +24,15 @@ def build_graph(file):
     n = int(f.readline())
     for _ in xrange(n):
         line = f.readline().rstrip()
+
+        # Load the accuser and the number of people accused by him/her
         (accuser, strnumaccusasions) = re.split('\s+', line)
+        numaccusations = int(strnumaccusasions)
+
         if(not graph.has_key(accuser)):
             graph[accuser]={}
         accused = graph[accuser]
-        numaccusations = int(strnumaccusasions)
+
         for num in xrange(numaccusations):
             accusee = f.readline().rstrip()
             accused[accusee] = True
@@ -49,28 +53,28 @@ def partitions(graph):
     if(graphlen == 0):
         return [len(g1),len(g2)]
 
-    current_level = []
-    next_level = []
+    current_nodes = []
+    next_nodes = []
 
     visited = {}
-    current_level.append( graph.keys()[0] )
-    visited[current_level[0]] = True
-    a = True
+    current_nodes.append( graph.keys()[0] )
+    visited[current_nodes[0]] = True
+    flag = True
 
     while(len(g1) + len(g2) < graphlen):
-        next_level = []
-        for p in current_level:
-            if(a):
+        next_nodes = []
+        for p in current_nodes:
+            if(flag):
                 g1.add(p)
             else:
                 g2.add(p)
             for k in graph[p]:
                 if(not visited.has_key(k)):
-                    next_level.append(k)
+                    next_nodes.append(k)
                 visited[k] = True
             visited[p]= True
-        current_level = next_level
-        a = not a
+        current_nodes = next_nodes
+        flag = not flag
 
     log(g1)
     log(g2)
@@ -78,7 +82,9 @@ def partitions(graph):
     return [len(g1),len(g2)]
 
 def main():
+    """Main function"""
 
+    # I'm using -d to enable debug
     try:
         opts, args = getopt.getopt(sys.argv[1:], "d")
     except getopt.GetoptError:
@@ -88,10 +94,17 @@ def main():
             global debug
             debug = True
 
+    # load the input file
+    # into memory using a dictionary (aka hash)
     graph = build_graph(args[0])
     pprint(graph)
 
+    # do the hard part, finding the 2 partitions
+    # into the graph, this is basically a visit
+    # algorithm 
     (g1, g2) = partitions(graph)
+
+    # print the result
     if(g1>=g2):
         print "%d %d" % (g1,g2)
     else:
