@@ -2,6 +2,7 @@
 
 import sys
 import getopt
+import re
 
 debug = False
 
@@ -14,6 +15,27 @@ def pprint(obj):
         import pprint
         pp = pprint.PrettyPrinter(indent=1)
         pp.pprint(obj)
+
+def load_input(file):
+
+    data = []
+    
+    try:
+        f = open(file)
+        W = f.readline().rstrip() 
+
+        for line in f:
+            # data structure will be in format of list of listes
+            # each element of the list is of this format:
+            # (SKU, weight, cost)
+            data.append( re.split('\s+', line.rstrip()) )
+
+        f.close()
+    except Exception as e:
+        print e
+        sys.exit(2)
+
+    return (data, W)
 
 def main():
     """Main function"""
@@ -29,9 +51,13 @@ def main():
             debug = True
    
     file = ""
+    W = 0
     try:
         if(args[0]):
             file = args[0]
+        (data, W) = load_input(file)
+        log("Max weight (W): " + W)
+        pprint(data)
     except IndexError:
         print "Provide input file"
         sys.exit(2)
