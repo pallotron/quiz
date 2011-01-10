@@ -1,0 +1,40 @@
+#!/usr/bin/python
+
+import sys
+import getopt
+
+debug = False
+
+def log(msg):
+    if debug == True:
+        print msg
+
+def pprint(obj):
+    if debug:
+        import pprint
+        pp = pprint.PrettyPrinter(indent=1)
+        pp.pprint(obj)
+
+def main():
+    """Main function"""
+
+    # I'm using -d to enable debug
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "d")
+    except getopt.GetoptError:
+        sys.exit(2)
+    for o, v in opts:
+        if (o == "-d"):
+            global debug
+            debug = True
+   
+    file = ""
+    try:
+        if(args[0]):
+            file = args[0]
+    except IndexError:
+        print "Provide input file"
+        sys.exit(2)
+
+if __name__ == "__main__":
+    main()
