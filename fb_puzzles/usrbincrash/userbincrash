@@ -18,24 +18,74 @@ def pprint(obj):
 
 def load_input(file):
 
-    data = []
+    c = []
+    w = []
     
     try:
         f = open(file)
-        W = f.readline().rstrip() 
+        W = int(f.readline().rstrip())
 
         for line in f:
             # data structure will be in format of list of listes
             # each element of the list is of this format:
             # (SKU, weight, cost)
-            data.append( re.split('\s+', line.rstrip()) )
+            (SKU, weight, cost) = re.split('\s+', line.rstrip())
+            c.append(int(cost))
+            w.append(int(weight))
 
         f.close()
     except Exception as e:
         print e
         sys.exit(2)
 
-    return (data, W)
+    return (c, w, W)
+
+def find_gcd(w, W):
+    """Find the greatest common denominator among elements of w"""
+
+    from fractions import gcd
+    GCD = W
+    for i in w:
+        GCD = gcd(GCD,i)
+   
+    return GCD
+
+
+def solve(c, w, W):
+    """
+    This looks like the classical unbounded knapsack problem but with
+    a different condition. 
+    See: http://en.wikipedia.org/wiki/Knapsack_problem 
+    """
+
+    N = len(c)
+    log("N: " + str(N))
+
+    log("Max weight (W): " + str(W))
+    log("c:")
+    pprint(c)
+    log("w:")
+    pprint(w)
+
+    # to speed up the algo it is suggested to divide each element of w
+    # by their GCD (Greater Commond Denominator)
+    gcd = find_gcd(w, W)
+    log("GCD: " + str(gcd))
+    # We also divide the W against the GCD
+    W /= gcd
+    log("W: " + str(W))
+
+    for e in w:
+        e /= gcd
+
+    log(w)
+
+    # Implement the unbounded kanpsack algo
+    # Here the problem is slightly different from the one in literature
+    # Instead of putting elements inside the knapsack we want to take
+    # them out
+
+    return None
 
 def main():
     """Main function"""
@@ -55,9 +105,8 @@ def main():
     try:
         if(args[0]):
             file = args[0]
-        (data, W) = load_input(file)
-        log("Max weight (W): " + W)
-        pprint(data)
+        (c, w, W) = load_input(file)
+        print solve(c, w, W)
     except IndexError:
         print "Provide input file"
         sys.exit(2)
